@@ -37,17 +37,18 @@ void ReadTpl(res) async {
 			res.write(line);
 		}
 		if (line.contains("@tr")) {
-			viewSelect(res);
+			String message = await viewSelect(res);
 		}
 		if (line.contains("@ver")) {
-			viewVer(res);
+			String message = await viewVer(res);
 		}		
 	}
 	 
+	res.close();
 	print("User is ok.");
 }
 
-void viewSelect(res) async {
+Future<String> viewSelect(res) async {
 	final conn = await MySqlConnection.connect(new ConnectionSettings(host: '127.0.0.1',port: 3306,user: 'root',/*password: '',*/db: 'test',));
 	res.write('<table>');
 	var heads = await conn.query("SHOW COLUMNS FROM myarttable");
@@ -69,14 +70,16 @@ void viewSelect(res) async {
 	}
 	res.write('</table>');
 	await conn.close();
-	res.close();
+	return Future.delayed(Duration(seconds: 0), () => "Hello Dart");
 }
 
-void viewVer(res) async {
+Future<String> viewVer(res) async {
 	final conn = await MySqlConnection.connect(new ConnectionSettings(host: '127.0.0.1',port: 3306,user: 'root',/*password: '',*/db: 'test',));
 	var vers = await conn.query("SELECT VERSION() AS ver");
 	for (var ver in vers) {
-		res.write('<p>${ver[0]}</p>');
+		res.write('${ver[0]}');
 		print('${ver[0]}');
 	}
+	await conn.close();
+	return Future.delayed(Duration(seconds: 0), () => "Hello Dart");
 }
