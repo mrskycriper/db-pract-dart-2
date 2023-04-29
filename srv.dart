@@ -7,20 +7,21 @@ void main() async {
   print("Listening for connections on http://localhost:8888/");
   await server.forEach((HttpRequest request) {
  
-    var resText = "Page Not Found";
     switch (request.uri.path) {
-      case "/":               // если обращение к главной странице
-        resText = "Index Page";
-        break;
-      case "/about":               // если обращение по пути "/about"
-        resText = "About Page";
-        break;
-      case "/contact":               // если обращение по пути "/contacts"
-        resText = "Contacts Page";
-        break;
+		case "/":
+			//print(request.uri);
+			var uri = Uri.parse(request.uri.toString());
+			uri.queryParameters.forEach((k, v) {
+				print('key: $k - value: $v');
+			});
+			print('Count: '+uri.queryParameters.length.toString());
+			if (uri.queryParameters.length > 0) {
+				// добавление одной строки в таблицу.
+				rowInsert(uri.queryParameters);
+			}
+			break;
     }
     final res = request.response;
-//	res.write(resText);
 	ReadTpl(res);
 
   });
@@ -31,7 +32,7 @@ void ReadTpl(res) async {
 	File file = File("select.html");
 	var lines = await file.readAsLines();
 	for(final line in lines){
-		print(line);
+	//	print(line);
 		
 		if ((line != "@tr") && (line != "@ver")) {
 			res.write(line);
@@ -55,7 +56,7 @@ Future<String> viewSelect(res) async {
 	res.write('<tr>');
 	for (var head in heads) {
 		res.write('<td>${head[0]}</td>');
-		print('${head[0]}');
+	//	print('${head[0]}');
 	}
 	res.write('</tr>');	
 	
@@ -64,7 +65,7 @@ Future<String> viewSelect(res) async {
 		res.write('<tr>');
 		for (var col in row) {
 			res.write('<td>${col}</td>');
-			print('${col}');
+		//	print('${col}');
 		}
 		res.write('</tr>');
 	}
@@ -81,5 +82,25 @@ Future<String> viewVer(res) async {
 		print('${ver[0]}');
 	}
 	await conn.close();
+	return Future.delayed(Duration(seconds: 0), () => "Hello Dart");
+}
+
+Future<String> rowInsert(mass) async {
+
+	String sValue = '';
+	int i=0;
+	mass.forEach((k, v) {
+		//print('key: $k - value: $v');
+		if (i>0){sValue = sValue+',';}
+		sValue = sValue+"'$v'";
+		i++;
+	});
+	sValue = 'INSERT INTO myarttable (text, description, keywords) VALUES ('+sValue+')';
+	
+	final conn = await MySqlConnection.connect(new ConnectionSettings(host: '127.0.0.1',port: 3306,user: 'root',/*password: '',*/db: 'test',));
+	await conn.query(sValue);
+	await conn.close();
+	print('Insert into table is good.');
+
 	return Future.delayed(Duration(seconds: 0), () => "Hello Dart");
 }
