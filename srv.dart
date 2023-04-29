@@ -39,23 +39,44 @@ void ReadTpl(res) async {
 		if (line.contains("@tr")) {
 			viewSelect(res);
 		}
-		
+		if (line.contains("@ver")) {
+			viewVer(res);
+		}		
 	}
 	 
 	print("User is ok.");
 }
 
 void viewSelect(res) async {
-  final conn = await MySqlConnection.connect(new ConnectionSettings(host: '127.0.0.1',port: 3306,user: 'root',/*password: '',*/db: 'test',));
-  var rows = await conn.query('select * from myarttable');
-  for (var row in rows) {
+	final conn = await MySqlConnection.connect(new ConnectionSettings(host: '127.0.0.1',port: 3306,user: 'root',/*password: '',*/db: 'test',));
+	res.write('<table>');
+	var heads = await conn.query("SHOW COLUMNS FROM myarttable");
 	res.write('<tr>');
-    for (var col in row) {
-		res.write('<td>'+'${col}'+'</td>');
-		print('${col}');
+	for (var head in heads) {
+		res.write('<td>${head[0]}</td>');
+		print('${head[0]}');
 	}
-	res.write('</tr>');
-  }
-  await conn.close();
-  res.close();
+	res.write('</tr>');	
+	
+	var rows = await conn.query("SELECT * FROM myarttable WHERE id>14 ORDER BY id DESC");
+	for (var row in rows) {
+		res.write('<tr>');
+		for (var col in row) {
+			res.write('<td>${col}</td>');
+			print('${col}');
+		}
+		res.write('</tr>');
+	}
+	res.write('</table>');
+	await conn.close();
+	res.close();
+}
+
+void viewVer(res) async {
+	final conn = await MySqlConnection.connect(new ConnectionSettings(host: '127.0.0.1',port: 3306,user: 'root',/*password: '',*/db: 'test',));
+	var vers = await conn.query("SELECT VERSION() AS ver");
+	for (var ver in vers) {
+		res.write('<p>${ver[0]}</p>');
+		print('${ver[0]}');
+	}
 }
