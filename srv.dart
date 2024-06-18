@@ -65,7 +65,6 @@ Future<void> viewSelect(res) async {
       collation: collation,
     );
     await conn.connect();
-    res.write('<table>');
     var table =
         await conn.execute("SELECT * FROM ${name1} NATURAL JOIN ${name2}");
     final numOfCols = table.numOfColumns;
@@ -83,7 +82,6 @@ Future<void> viewSelect(res) async {
       }
       res.write('</tr>');
     }
-    res.write('</table>');
     await conn.close();
   } on Exception catch (e) {
     res.write('WAITING FOR SQL SERVER TO SETUP');
