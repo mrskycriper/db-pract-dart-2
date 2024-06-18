@@ -3,13 +3,13 @@ import 'dart:io';
 
 import 'package:mysql_client/mysql_client.dart';
 
-var hostDockerInternalAddress;
+var mysql_ip;
 final collation = "utf8mb4_unicode_ci";
 
 void main() async {
   var server = await HttpServer.bind(InternetAddress.anyIPv4, 8888);
   print("Listening for connections on http://host.docker.internal:8888/");
-  hostDockerInternalAddress = await getHostDockerInternalAddress();
+  mysql_ip = await getDatabaseIP();
 
   await server.forEach((HttpRequest request) {
     switch (request.uri.path) {
@@ -30,9 +30,10 @@ void main() async {
   });
 }
 
-Future<String> getHostDockerInternalAddress() async {
-  final addresses = await InternetAddress.lookup('host.docker.internal');
-  return addresses.isNotEmpty ? addresses.first.address : '192.168.0.102';
+Future<String> getDatabaseIP() async {
+  final addresses = await InternetAddress.lookup('dart_mysql_lab_1');
+	print('getDatabaseIP: ${addresses.first.address}');
+  return addresses.first.address;
 }
 
 void ReadTpl(res) async {
@@ -54,11 +55,11 @@ void ReadTpl(res) async {
 Future<void> viewSelect(res) async {
   try {
     final conn = await MySQLConnection.createConnection(
-      host: hostDockerInternalAddress,
+      host: mysql_ip,
       port: 3306,
       userName: "root",
-      password: "qwerty",
-      databaseName: "test",
+      password: "12345678",
+      databaseName: "lab_1",
       collation: collation,
     );
     await conn.connect();
@@ -90,7 +91,7 @@ Future<void> viewSelect(res) async {
 Future<void> viewVer(res) async {
   try {
     final conn = await MySQLConnection.createConnection(
-        host: hostDockerInternalAddress,
+        host: mysql_ip,
         port: 3306,
         userName: "root",
         password: "12345678",
@@ -100,6 +101,7 @@ Future<void> viewVer(res) async {
     var vers = await conn.execute("SELECT VERSION() AS ver");
     for (var ver in vers.rows) {
       res.write('${ver.colAt(0)}');
+			print('viewVer: ${ver.colAt(0)}');
     }
     await conn.close();
   } on Exception catch (e) {
@@ -124,7 +126,7 @@ Future<void> rowInsert(mass) async {
         'INSERT INTO Individuals (last_name, first_name, middle_name, passport, tax_number, social_number, driver_license, documents, notes) VALUES ($sValue)';
 
     final conn = await MySQLConnection.createConnection(
-        host: hostDockerInternalAddress,
+        host: mysql_ip,
         port: 3306,
         userName: "root",
         password: "12345678",
