@@ -1,5 +1,0 @@
-
-
-
-1) dart pub global activate dart_frog_cli
-2) dart pub install mysql

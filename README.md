@@ -1,10 +1,21 @@
-# practDart
-Как можно работать с таблицами в MySQL на Dart
+# db-pract-dart-1
+
+Лабораторная работа по базам данных №1
+
+## Демонстрация
 
 Внешний вид главной страницы:
 
-![image](https://user-images.githubusercontent.com/10297748/235299635-c6289b8f-a595-4ced-b2bb-4eed0fc3a2f1.png)
+![image](Image.png)
 
-Пример гарантированно работает при установке модулей dart_frog_cli и mysql. Для этого, после установки Dart нужно выполнить команды:
-1) dart pub global activate dart_frog_cli
-2) dart pub install mysql
+## Запуск
+
+1) Установить и запустить Docker
+2) Запустить `run.sh`  
+или  
+`docker compose build` + `docker compose up -d` любым удобным способом
+3) Открыть [localhost:8888](http://localhost:8888)
+
+## Остановка
+
+1) `docker compose down`
