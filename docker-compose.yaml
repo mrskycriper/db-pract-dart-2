@@ -1,0 +1,31 @@
+services:
+  mysql:
+    image: mysql:latest
+    container_name: dart_mysql_lab_1
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345678
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./import_test.sql:/docker-entrypoint-initdb.d/import_test.sql
+      - ./my.cnf:/etc/mysql/conf.d/my.cnf
+    networks:
+      - dart_network_lab_1
+
+  dart_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dart_app_lab_1
+    depends_on:
+      - mysql
+    ports:
+      - "8888:8888"
+    networks:
+      - dart_network_lab_1
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+networks:
+  dart_network_lab_1:
