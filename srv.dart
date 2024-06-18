@@ -31,7 +31,7 @@ void main() async {
 }
 
 Future<String> getDatabaseIP() async {
-  final addresses = await InternetAddress.lookup('dart_mysql_lab_1');
+  final addresses = await InternetAddress.lookup('dart_mysql_lab_2');
 	print('getDatabaseIP: ${addresses.first.address}');
   return addresses.first.address;
 }
@@ -59,7 +59,7 @@ Future<void> viewSelect(res) async {
       port: 3306,
       userName: "root",
       password: "12345678",
-      databaseName: "lab_1",
+      databaseName: "lab_2",
       collation: collation,
     );
     await conn.connect();
@@ -95,7 +95,7 @@ Future<void> viewVer(res) async {
         port: 3306,
         userName: "root",
         password: "12345678",
-        databaseName: "lab_1",
+        databaseName: "lab_2",
         collation: collation);
     await conn.connect();
     var vers = await conn.execute("SELECT VERSION() AS ver");
@@ -130,7 +130,7 @@ Future<void> rowInsert(mass) async {
         port: 3306,
         userName: "root",
         password: "12345678",
-        databaseName: "lab_1",
+        databaseName: "lab_2",
         collation: collation);
     await conn.connect();
     await conn.execute(sValue);
