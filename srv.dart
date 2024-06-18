@@ -54,6 +54,8 @@ void ReadTpl(res) async {
 
 Future<void> viewSelect(res) async {
   try {
+    final name1 = "Observation";
+    final name2 = "NaturalObjects";
     final conn = await MySQLConnection.createConnection(
       host: mysql_ip,
       port: 3306,
@@ -63,16 +65,16 @@ Future<void> viewSelect(res) async {
       collation: collation,
     );
     await conn.connect();
-    var heads = await conn.execute("SHOW COLUMNS FROM Individuals");
+    res.write('<table>');
+    var table =
+        await conn.execute("SELECT * FROM ${name1} NATURAL JOIN ${name2}");
+    final numOfCols = table.numOfColumns;
     res.write('<tr>');
-    for (var head in heads.rows) {
-      res.write('<td>${head.colAt(0)}</td>');
+    for (var col in table.cols) {
+      res.write('<td>${col.name}</td>');
     }
     res.write('</tr>');
 
-    var table = await conn.execute(
-        "SELECT * FROM Individuals ORDER BY last_name, first_name, middle_name");
-    final numOfCols = table.numOfColumns;
     for (var row in table.rows) {
       res.write('<tr>');
       for (var i = 0; i < numOfCols; i++) {
@@ -81,6 +83,7 @@ Future<void> viewSelect(res) async {
       }
       res.write('</tr>');
     }
+    res.write('</table>');
     await conn.close();
   } on Exception catch (e) {
     res.write('WAITING FOR SQL SERVER TO SETUP');
