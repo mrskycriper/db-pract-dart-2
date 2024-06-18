@@ -2,50 +2,114 @@ CREATE DATABASE lab_2 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 USE lab_2;
 
-CREATE TABLE `Individuals` (
-  `id` int AUTO_INCREMENT PRIMARY KEY,
-  `first_name` tinytext NOT NULL,
-  `last_name` tinytext NOT NULL,
-  `middle_name` tinytext,
-  `passport` tinytext NOT NULL,
-  `tax_id` tinytext,
-  `isurance_id` tinytext,
-  `drivers_license` tinytext,
-  `additional_documents` text,
-  `notes` text,
-  `borrower_id` int
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
-
-CREATE TABLE `Loans` (
-  `id` int AUTO_INCREMENT PRIMARY KEY,
-  `individual_id` int NOT NULL,
-  `amount` decimal(18,2) NOT NULL,
-  `interest_rate` decimal(5,2) NOT NULL,
-  `due_date` date NOT NULL,
-  `conditions` text NOT NULL,
-  `notes` text
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
-
-CREATE TABLE `OrganizationLoans` (
+CREATE TABLE `Sector` (
   `id` int PRIMARY KEY,
-  `organization_id` int NOT NULL,
-  `individual_id` int NOT NULL,
-  `amount` decimal(18,2) NOT NULL,
-  `due_date` date NOT NULL,
-  `interest_rate` decimal(5,2) NOT NULL,
-  `conditions` text NOT NULL,
+  `coordinates` tinytext,
+  `light_intensity` double,
+  `foreign_objects` int,
+  `star_object_count` int,
+  `unidentified_object_count` int,
+  `identified_object__count` int,
+  `date_update` datetime,
   `notes` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-ALTER TABLE `Loans`ADD FOREIGN KEY (`individual_id`) REFERENCES `Individuals` (`id`);
+CREATE TABLE `Objects` (
+  `id` int PRIMARY KEY,
+  `type` tinytext,
+  `accuracy` float,
+  `quantity` int,
+  `time` time,
+  `date` date,
+  `date_update` datetime,
+  `notes` text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-ALTER TABLE `OrganizationLoans` ADD FOREIGN KEY (`individual_id`) REFERENCES `Individuals` (`id`);
+CREATE TABLE `NaturalObjects` (
+  `id` int PRIMARY KEY,
+  `type` tinytext,
+  `galaxy` tinytext,
+  `accuracy` float,
+  `light_flux` double,
+  `associated_objects` int,
+  `date_update` datetime,
+  `notes` text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-INSERT INTO Individuals (last_name, first_name, middle_name, passport, tax_id, isurance_id, drivers_license, additional_documents, notes)
-VALUES
-('Ivanov', 'Ivan', 'Ivanovich', '4510123456', '770123456789', '12345678901', '5012345678', 'Passport copy, lease agreement', 'Excellent client with good credit history'),
-('Petrova', 'Anna', 'Sergeevna', '4510234567', '780234567890', '23456789012', '5012346789', 'Passport copy, income statement', 'Regular client, always pays on time'),
-('Sidorova', 'Maria', 'Alexandrovna', '4510345678', '773456789012', '34567890123', '5012347890', 'Passport copy, employment contract', 'New client, additional verification required'),
-('Kuznetsov', 'Dmitry', 'Petrovich', '4510456789', '774567890123', '45678901234', '5012348901', 'Passport copy, bank statement', 'High-income client'),
-('Smirnova', 'Ekaterina', 'Vladimirovna', '4510567890', '775678901234', '56789012345', '5012349012', 'Passport copy, sale agreement', 'Client with stable financial situation'),
-('Popov', 'Alexey', 'Igorevich', '4510678901', '776789012345', '67890123456', '5012340123', 'Passport copy, tax certificate', 'Client with previous loans in other banks');
+CREATE TABLE `Location` (
+  `id` int PRIMARY KEY,
+  `earth_position` tinytext,
+  `sun_position` tinytext,
+  `moon_position` tinytext,
+  `date_update` datetime,
+  `notes` text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE `Observation` (
+  `id` int PRIMARY KEY,
+  `sector_id` int,
+  `object_id` int,
+  `natural_object_id` int,
+  `location_id` int,
+  `date_update` datetime,
+  `notes` text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE `Observation` ADD FOREIGN KEY (`sector_id`) REFERENCES `Sector` (`id`);
+
+ALTER TABLE `Observation` ADD FOREIGN KEY (`object_id`) REFERENCES `Objects` (`id`);
+
+ALTER TABLE `Observation` ADD FOREIGN KEY (`natural_object_id`) REFERENCES `NaturalObjects` (`id`);
+
+ALTER TABLE `Observation` ADD FOREIGN KEY (`location_id`) REFERENCES `Location` (`id`);
+
+INSERT INTO Sector (coordinates, light_intensity, foreign_objects, star_object_count, unidentified_object_count, identified_object__count, notes)
+VALUES 
+    ('10.123, 20.456', 0.8, 2, 5, 1, 6, 'Sector near Orion Nebula'),
+    ('30.789, 40.012', 0.6, 3, 7, 2, 8, 'Sector near Andromeda Galaxy'),
+    ('50.234, 60.789', 0.7, 1, 4, 0, 5, 'Sector near Pleiades Cluster');
+
+INSERT INTO Objects (type, accuracy, quantity, time, date, notes)
+VALUES 
+    ('Satellite', 0.95, 1, '12:00:00', '2024-06-01', 'Weather monitoring satellite'),
+    ('Space Station', 0.98, 1, '14:30:00', '2024-06-02', 'International Space Station'),
+    ('Debris', 0.70, 5, '16:45:00', '2024-06-03', 'Debris from old satellite');
+
+INSERT INTO Natural_objects(type, galaxy, accuracy, light_flux, associated_objects, notes)
+VALUES 
+    ('Star', 'Milky Way', 0.99, 1.2e+30, 3, 'Nearby star in the Milky Way'),
+    ('Planet', 'Milky Way', 0.95, 3.3e+24, 1, 'Planet in the Milky Way galaxy'),
+    ('Galaxy', 'Andromeda', 0.90, 5.0e+35, 0, 'Andromeda Galaxy'),
+    ('Asteroid', 'Solar System', 0.85, 4.5e+18, 0, 'Asteroid in the asteroid belt'),
+    ('Comet', 'Solar System', 0.80, 1.0e+15, 0, 'Comet passing near Earth'),
+    ('Nebula', 'Milky Way', 0.88, 2.5e+28, 2, 'Nebula observed in the Milky Way');
+
+INSERT INTO Location(earth_position, sun_position, moon_position, notes)
+VALUES 
+    ('10.123, 20.456', '30.789, 40.012', '15.678, 25.123', 'Observation made from Earth to Sun direction'),
+    ('30.789, 40.012', '50.234, 60.789', '35.678, 45.123', 'Observation made from Earth'),
+    ('50.234, 60.789', '10.123, 20.456', '55.678, 65.123', 'Observation made from Earth to Moon direction');
+
+INSERT INTO Observation (sector_id, object_id, natural_object_id, location_id, observer_notes, date_update)
+VALUES 
+    (1, 1, NULL, 1, 'Weather monitoring satellite observed in sector 1', NOW()),
+    (2, 2, NULL, 2, 'International Space Station observed in sector 2', NOW()),
+    (3, 3, NULL, 3, 'Debris from old satellite detected in sector 3', NOW()),
+    (1, NULL, 1, 1, 'Bright star observed in sector 1', NOW()),
+    (2, NULL, 2, 2, 'Planet observed in sector 2', NOW()),
+    (3, NULL, 3, 3, 'Asteroids detected in sector 3', NOW()),
+    (3, NULL, 4, 3, 'Galaxy Andromeda observed in sector 3', NOW()),
+    (2, NULL, 5, 2, 'Comet observed in sector 2', NOW()),
+    (3, NULL, 6, 3, 'Nebula detected in sector 3', NOW());
+
+CREATE PROCEDURE observation_and_natural_objects()
+BEGIN
+    SELECT * FROM Observation NATURAL JOIN NaturalObjects;
+END;
+
+CREATE TRIGGER update_date_trigger
+BEFORE UPDATE ON Observation
+FOR EACH ROW
+BEGIN
+    SET NEW.date_update = NOW();
+END;
