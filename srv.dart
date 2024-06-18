@@ -125,9 +125,7 @@ Future<void> rowInsert(mass) async {
       sValue = sValue + "'$v'";
       i++;
     });
-    sValue =
-        'INSERT INTO Individuals (last_name, first_name, middle_name, passport, tax_number, social_number, driver_license, documents, notes) VALUES ($sValue)';
-
+    sValue = 'INSERT INTO NaturalObjects (type, galaxy, accuracy, light_flux, associated_objects, notes) VALUES ($sValue)';
     final conn = await MySQLConnection.createConnection(
         host: mysql_ip,
         port: 3306,
