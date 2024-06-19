@@ -106,11 +106,11 @@ delimiter //
 
 CREATE PROCEDURE observation_and_natural_objects()
 BEGIN
-    SELECT * FROM `Observation` NATURAL JOIN `NaturalObjects`;
+    SELECT * FROM Observation INNER JOIN NaturalObjects ON Observation.natural_object_id=NaturalObjects.id;
 END//
 
 CREATE TRIGGER update_date_trigger
-BEFORE UPDATE ON `Observation`
+BEFORE UPDATE ON Observation
 FOR EACH ROW
 BEGIN
     SET NEW.date_update = NOW();

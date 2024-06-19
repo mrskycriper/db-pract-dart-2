@@ -54,8 +54,6 @@ void ReadTpl(res) async {
 
 Future<void> viewSelect(res) async {
   try {
-    //final name1 = "Observation";
-    //final name2 = "NaturalObjects";
     final conn = await MySQLConnection.createConnection(
       host: mysql_ip,
       port: 3306,
@@ -65,8 +63,8 @@ Future<void> viewSelect(res) async {
       collation: collation,
     );
     await conn.connect();
-    var table =
-        await conn.execute("CALL observation_and_natural_objects()");
+    //var table = await conn.execute("CALL observation_and_natural_objects()");
+    var table = await conn.execute("SELECT * FROM Observation INNER JOIN NaturalObjects ON Observation.natural_object_id=NaturalObjects.id");
     final numOfCols = table.numOfColumns;
     res.write('<tr>');
     for (var col in table.cols) {
