@@ -63,19 +63,19 @@ ALTER TABLE `Observation` ADD FOREIGN KEY (`natural_object_id`) REFERENCES `Natu
 
 ALTER TABLE `Observation` ADD FOREIGN KEY (`location_id`) REFERENCES `Location` (`id`);
 
-INSERT INTO Sector (coordinates, light_intensity, foreign_objects, star_object_count, unidentified_object_count, identified_object__count, notes)
+INSERT INTO `Sector` (`coordinates`, `light_intensity`, `foreign_objects`, `star_object_count`, `unidentified_object_count`, `identified_object__count`, `notes`)
 VALUES 
     ('10.123, 20.456', 0.8, 2, 5, 1, 6, 'Sector near Orion Nebula'),
     ('30.789, 40.012', 0.6, 3, 7, 2, 8, 'Sector near Andromeda Galaxy'),
     ('50.234, 60.789', 0.7, 1, 4, 0, 5, 'Sector near Pleiades Cluster');
 
-INSERT INTO Objects (type, accuracy, quantity, time, date, notes)
+INSERT INTO `Objects` (`type`, `accuracy`, `quantity`, `time`, `date`, `notes`)
 VALUES 
     ('Satellite', 0.95, 1, '12:00:00', '2024-06-01', 'Weather monitoring satellite'),
     ('Space Station', 0.98, 1, '14:30:00', '2024-06-02', 'International Space Station'),
     ('Debris', 0.70, 5, '16:45:00', '2024-06-03', 'Debris from old satellite');
 
-INSERT INTO Natural_objects(type, galaxy, accuracy, light_flux, associated_objects, notes)
+INSERT INTO `NaturalObjects` (`type`, `galaxy`, `accuracy`, `light_flux`, `associated_objects`, `notes`)
 VALUES 
     ('Star', 'Milky Way', 0.99, 1.2e+30, 3, 'Nearby star in the Milky Way'),
     ('Planet', 'Milky Way', 0.95, 3.3e+24, 1, 'Planet in the Milky Way galaxy'),
@@ -84,13 +84,13 @@ VALUES
     ('Comet', 'Solar System', 0.80, 1.0e+15, 0, 'Comet passing near Earth'),
     ('Nebula', 'Milky Way', 0.88, 2.5e+28, 2, 'Nebula observed in the Milky Way');
 
-INSERT INTO Location(earth_position, sun_position, moon_position, notes)
+INSERT INTO `Location` (`earth_position`, `sun_position`, `moon_position`, `notes`)
 VALUES 
     ('10.123, 20.456', '30.789, 40.012', '15.678, 25.123', 'Observation made from Earth to Sun direction'),
     ('30.789, 40.012', '50.234, 60.789', '35.678, 45.123', 'Observation made from Earth'),
     ('50.234, 60.789', '10.123, 20.456', '55.678, 65.123', 'Observation made from Earth to Moon direction');
 
-INSERT INTO Observation (sector_id, object_id, natural_object_id, location_id, observer_notes, date_update)
+INSERT INTO `Observation` (`sector_id`, `object_id`, `natural_object_id`, `location_id`, `notes`, `date_update`)
 VALUES 
     (1, 1, NULL, 1, 'Weather monitoring satellite observed in sector 1', NOW()),
     (2, 2, NULL, 2, 'International Space Station observed in sector 2', NOW()),
@@ -104,7 +104,7 @@ VALUES
 
 CREATE PROCEDURE observation_and_natural_objects()
 BEGIN
-    SELECT * FROM Observation NATURAL JOIN NaturalObjects;
+    SELECT * FROM `Observation` NATURAL JOIN `NaturalObjects`;
 END;
 
 CREATE TRIGGER update_date_trigger
