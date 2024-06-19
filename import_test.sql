@@ -102,14 +102,18 @@ VALUES
     (2, NULL, 5, 2, 'Comet observed in sector 2', NOW()),
     (3, NULL, 6, 3, 'Nebula detected in sector 3', NOW());
 
+delimiter //
+
 CREATE PROCEDURE observation_and_natural_objects()
 BEGIN
     SELECT * FROM `Observation` NATURAL JOIN `NaturalObjects`;
-END;
+END//
 
 CREATE TRIGGER update_date_trigger
-BEFORE UPDATE ON Observation
+BEFORE UPDATE ON `Observation`
 FOR EACH ROW
 BEGIN
     SET NEW.date_update = NOW();
-END;
+END//
+
+delimiter ;
