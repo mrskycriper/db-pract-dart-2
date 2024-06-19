@@ -3,7 +3,7 @@ CREATE DATABASE lab_2 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE lab_2;
 
 CREATE TABLE `Sector` (
-  `id` int PRIMARY KEY,
+  `id` int PRIMARY KEY AUTO_INCREMENT,
   `coordinates` tinytext,
   `light_intensity` double,
   `foreign_objects` int,
@@ -15,7 +15,7 @@ CREATE TABLE `Sector` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE `Objects` (
-  `id` int PRIMARY KEY,
+  `id` int PRIMARY KEY AUTO_INCREMENT,
   `type` tinytext,
   `accuracy` float,
   `quantity` int,
@@ -26,7 +26,7 @@ CREATE TABLE `Objects` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE `NaturalObjects` (
-  `id` int PRIMARY KEY,
+  `id` int PRIMARY KEY AUTO_INCREMENT,
   `type` tinytext,
   `galaxy` tinytext,
   `accuracy` float,
@@ -37,7 +37,7 @@ CREATE TABLE `NaturalObjects` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE `Location` (
-  `id` int PRIMARY KEY,
+  `id` int PRIMARY KEY AUTO_INCREMENT,
   `earth_position` tinytext,
   `sun_position` tinytext,
   `moon_position` tinytext,
@@ -46,7 +46,7 @@ CREATE TABLE `Location` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE `Observation` (
-  `id` int PRIMARY KEY,
+  `id` int PRIMARY KEY AUTO_INCREMENT,
   `sector_id` int,
   `object_id` int,
   `natural_object_id` int,
